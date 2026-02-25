@@ -1,16 +1,111 @@
-# React + Vite
+# Around The U.S. — React Version
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based refactor of the original Around The U.S. project.  
+This project was developed as part of the TripleTen Web Development program.
 
-Currently, two official plugins are available:
+## 📖 Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This application recreates the Around The U.S. interface using React functional components and hooks.  
+The project focuses on component structure, state management, and reusable pop-up architecture.
 
-## React Compiler
+The application renders:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- User profile section
+- List of image cards (mock data)
+- Multiple pop-ups (Edit Profile, Edit Avatar, New Card, Image Preview, Remove Card)
 
-## Expanding the ESLint configuration
+## 🚀 Technologies Used
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- React (Functional Components)
+- Vite
+- JavaScript (ES6+)
+- CSS (BEM methodology)
+- JSX
+
+## 🧱 Project Structure
+
+
+src/
+components/
+App/
+Header/
+Main/
+Footer/
+Card/
+Popup/
+NewCard/
+EditProfile/
+EditAvatar/
+ImagePopup/
+RemoveCard/
+blocks/
+images/
+index.css
+main.jsx
+
+
+## ⚙️ Installation & Setup
+
+1. Clone the repository:
+
+git clone <repository-url>
+
+
+2. Navigate into the project directory:
+
+cd web_project_around_react
+
+
+3. Install dependencies:
+
+npm install
+
+
+4. Start development server:
+
+npm run dev
+
+
+The application will open automatically in your browser (default port: 3000).
+
+## 🧠 Features Implemented
+
+- JSX markup conversion from static HTML
+- Component-based architecture
+- Reusable `Popup` component
+- State management using `useState`
+- Conditional rendering for pop-ups
+- Image preview modal
+- Mock card data rendering via `.map()`
+
+## 🗂 Mock Data
+
+Cards are currently rendered using static mock data.  
+API integration will be implemented in a future sprint.
+
+## 🎯 Learning Objectives
+
+This project demonstrates:
+
+- Converting HTML to JSX
+- Component decomposition
+- State lifting
+- Passing props between components
+- Conditional rendering
+- Reusable component patterns
+- Clean project structure
+
+## 📌 Future Improvements
+
+- Form validation using controlled components
+- API integration
+- Like / remove card logic
+- Full state management for user data
+
+---
+
+## 👤 Author
+
+Pedro Faustino  
+Community Pharmacist transitioning into Web Development  
+TripleTen Web Development Program
