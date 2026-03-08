@@ -1,26 +1,35 @@
-# Around The U.S. — React Version
+# Around the U.S. (React + API Integration)
+Este é um projeto interativo onde os utilizadores podem partilhar fotografias de lugares, curtir as fotos de outros utilizadores e gerir o seu próprio perfil. O projeto foi construído utilizando React e consome uma API externa para persistência de dados.
 
-A React-based refactor of the original Around The U.S. project.  
-This project was developed as part of the TripleTen Web Development program.
+🚀 Funcionalidades Implementadas
 
-## 📖 Overview
+1. Gestão de Perfil e Avatar
+Edição de Perfil: Os utilizadores podem atualizar o seu nome e biografia. As alterações são enviadas para a API através de um pedido PATCH.
 
-This application recreates the Around The U.S. interface using React functional components and hooks.  
-The project focuses on component structure, state management, and reusable pop-up architecture.
+Atualização de Avatar: Funcionalidade de alteração de imagem de perfil com validação de URL.
 
-The application renders:
+2. Gestão de Cartões (Cards)
+Listagem Dinâmica: Os cartões são carregados da API e renderizados dinamicamente na página.
 
-- User profile section
-- List of image cards (mock data)
-- Multiple pop-ups (Edit Profile, Edit Avatar, New Card, Image Preview, Remove Card)
+Adicionar Lugares: Formulário para adicionar novos cartões com título e link de imagem.
 
-## 🚀 Technologies Used
+Eliminar com Confirmação: Proteção que abre um popup de confirmação antes de apagar permanentemente um cartão do servidor.
 
-- React (Functional Components)
-- Vite
-- JavaScript (ES6+)
-- CSS (BEM methodology)
-- JSX
+Visualização de Imagem: Popup que expande a imagem do cartão para visualização em ecrã inteiro.
+
+3. Sistema de Interação (Likes)
+Contador de Curtidas: Exibe em tempo real o número total de curtidas que cada foto recebeu da comunidade.
+
+Lógica de Estado: O ícone de coração reflete se o utilizador atual já curtiu o cartão, alternando entre os estados ativo/inativo através de pedidos PUT e DELETE à API.
+
+🛠️ Tecnologias Utilizadas
+React.js: Biblioteca principal para construção da interface.
+
+Context API: Utilizada para gerir globalmente os dados do utilizador (CurrentUserContext).
+
+CSS Dinâmico: Gestão de estados de visibilidade (popups e botões) através de classes CSS condicionais.
+
+REST API: Integração completa com serviços de backend para operações CRUD.
 
 ## 🧱 Project Structure
 

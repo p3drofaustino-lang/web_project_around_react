@@ -8,7 +8,8 @@
   left: 0;
   bottom: 0;
   right: 0;
-  display: flex;
+  display: none;
+  z-index: 999;
 }
 
 .popup__button {
@@ -117,7 +118,7 @@
   line-height: 30px;
 }
 
-.popup_is-opened {
+.popup_opened {
   display: flex;
 }
 

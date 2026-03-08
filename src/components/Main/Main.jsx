@@ -1,96 +1,66 @@
-import { useState } from "react";
+import { useContext } from "react";
+import CurrentUserContext from "../../contexts/CurrentUserContext";
+import Card from "../Card/Card"; 
 
-import avatar from "../../images/avatar.jpg";
+function Main(props) {
+  // 1. Inscrição no contexto (Requisito Checklist 4)
+  const { currentUser } = useContext(CurrentUserContext);
 
-import Card from "../Card/Card";
-import Popup from "../Popup/Popup";
-import NewCard from "../NewCard/NewCard";
-import EditProfile from "../EditProfile/EditProfile";
-import EditAvatar from "../EditAvatar/EditAvatar";
-
-const cards = [
-  {
-    isLiked: false,
-    _id: '5d1f0611d321eb4bdcd707dd',
-    name: 'Yosemite Valley',
-    link: 'https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_yosemite.jpg',
-    owner: '5d1f0611d321eb4bdcd707dd',
-    createdAt: '2019-07-05T08:10:57.741Z',
-  },
-  {
-    isLiked: false,
-    _id: '5d1f064ed321eb4bdcd707de',
-    name: 'Lake Louise',
-    link: 'https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_lake-louise.jpg',
-    owner: '5d1f0611d321eb4bdcd707dd',
-    createdAt: '2019-07-05T08:11:58.324Z',
-  },
-];
-
-
-function Main() {
-  const [popup, setPopup] = useState(null);
-
-  const newCardPopup = { title: "New card", children: <NewCard /> };
-  const editProfilePopup = { title: "Edit profile", children: <EditProfile /> };
-  const editAvatarPopup = { title: "Change avatar", children: <EditAvatar /> };
-
-  function handleOpenPopup(popupData) {
-    setPopup(popupData);
-  }
-
-  function handleClosePopup() {
-    setPopup(null);
+  if (!currentUser) {
+    return <div className="content">Carregando...</div>;
   }
 
   return (
     <main className="content">
-      <section className="profile page__section">
-        <button
-          className="profile__avatar-button"
-          type="button"
-          aria-label="Alterar foto do perfil"
-          onClick={() => handleOpenPopup(editAvatarPopup)}
-        >
-          <img className="profile__image" src={avatar} alt="Avatar" />
-        </button>
-
-        <div className="profile__info">
-          <h1 className="profile__title">Jacques Cousteau</h1>
-          <button
-            aria-label="Editar perfil"
-            className="profile__edit-button"
-            type="button"
-            onClick={() => handleOpenPopup(editProfilePopup)}
+      <section className="profile">
+        <div className="profile__avatar-container">
+          {/* Adicionamos uma verificação simples ou fallback para evitar src vazio */}
+          <img 
+            className="profile__image" 
+            src={currentUser.avatar || null} 
+            alt={`Avatar de ${currentUser.name || "Avatar"}`} 
           />
-          <p className="profile__description">Explorador</p>
+          <button 
+            className="profile__avatar-edit" 
+            type="button" 
+            aria-label="Editar avatar"
+            onClick={props.onEditAvatarClick}
+          ></button>
         </div>
-
-        <button
-          aria-label="Adicionar cartão"
-          className="profile__add-button"
-          type="button"
-          onClick={() => handleOpenPopup(newCardPopup)}
-        />
+        <div className="profile__info">
+          <div className="profile__title-container">
+             <h1 className="profile__name">{currentUser?.name || "Carregando..."}</h1>
+             <button 
+                className="profile__edit-button" 
+                type="button" 
+                aria-label="Editar perfil"
+                onClick={props.onEditProfileClick}
+             ></button>
+          </div>
+          <p className="profile__description">{currentUser?.about || ""}</p>
+        </div>
+        <button 
+          className="profile__add-button" 
+          type="button" 
+          aria-label="Adicionar lugar"
+          onClick={props.onAddPlaceClick}
+        ></button>
       </section>
 
-      <section className="cards page__section">
-        <ul className="cards__list">
-          {cards.map((card) => (
+      <section className="elements">
+        <ul className="elements__list">
+          {/* Renderização dinâmica (Requisito Checklist 3) */}
+          {props.cards.map((card) => (
             <Card
-              key={card._id}
+              key={card._id} // Uso obrigatório de chaves únicas
               card={card}
-              handleOpenPopup={handleOpenPopup}
+              onCardClick={props.onCardClick} 
+              onCardLike={props.onCardLike}
+              onCardDelete={props.onCardDelete}
             />
           ))}
         </ul>
       </section>
-
-      {popup && (
-        <Popup onClose={handleClosePopup} title={popup.title}>
-          {popup.children}
-        </Popup>
-      )}
     </main>
   );
 }

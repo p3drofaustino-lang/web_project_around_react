@@ -29,7 +29,18 @@
 .card__image {
   min-height: 282px;
   max-height: 282px;
+  width: 100%;
   object-fit: cover;
+  cursor: pointer;
+}
+
+/* Container para alinhar o botão e o contador */
+.card__like-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 22px;
 }
 
 .card__like-button {
@@ -40,11 +51,25 @@
   border: none;
   padding: 0;
   margin: 0;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
 }
 
 .card__like-button:hover {
   opacity: 0.5;
-  cursor: pointer;
+}
+
+/* Estágio Ativo do Like - Corrigido para garantir a exibição */
+.card__like-button_is-active {
+  background-image: url("../images/like-active.svg");
+}
+
+.card__like-count {
+  font-size: 13px;
+  line-height: 16px;
+  text-align: center;
+  color: #000;
+  margin: 0;
 }
 
 .card__delete-button {
@@ -59,12 +84,18 @@
   right: 15px;
   padding: 0;
   margin: 0;
+  transition: opacity 0.3s ease;
 }
 
 .card__delete-button:hover {
   opacity: 0.6;
 }
 
-.card__like-button_is-active {
-  background: transparent url("../images/like-active.svg") no-repeat;
+/* Lógica de visibilidade do botão de excluir baseada na posse do card */
+.card__delete-button_visible {
+  display: block;
+}
+
+.card__delete-button_hidden {
+  display: none;
 }
