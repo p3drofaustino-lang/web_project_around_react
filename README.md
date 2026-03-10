@@ -1,120 +1,145 @@
-# Around the U.S. (React + API Integration)
-Este é um projeto interativo onde os utilizadores podem partilhar fotografias de lugares, curtir as fotos de outros utilizadores e gerir o seu próprio perfil. O projeto foi construído utilizando React e consome uma API externa para persistência de dados.
+# Around the U.S. — React Version
 
-🚀 Funcionalidades Implementadas
+## Description
 
-1. Gestão de Perfil e Avatar
-Edição de Perfil: Os utilizadores podem atualizar o seu nome e biografia. As alterações são enviadas para a API através de um pedido PATCH.
+This project is a React version of the **Around the U.S.** web application.
+It allows users to view, like, delete, and create location cards, as well as edit their profile and avatar.
 
-Atualização de Avatar: Funcionalidade de alteração de imagem de perfil com validação de URL.
+The application communicates with a backend API to store and retrieve user data and cards. React state, hooks, and Context API are used to manage application state and share user data across components.
 
-2. Gestão de Cartões (Cards)
-Listagem Dinâmica: Os cartões são carregados da API e renderizados dinamicamente na página.
-
-Adicionar Lugares: Formulário para adicionar novos cartões com título e link de imagem.
-
-Eliminar com Confirmação: Proteção que abre um popup de confirmação antes de apagar permanentemente um cartão do servidor.
-
-Visualização de Imagem: Popup que expande a imagem do cartão para visualização em ecrã inteiro.
-
-3. Sistema de Interação (Likes)
-Contador de Curtidas: Exibe em tempo real o número total de curtidas que cada foto recebeu da comunidade.
-
-Lógica de Estado: O ícone de coração reflete se o utilizador atual já curtiu o cartão, alternando entre os estados ativo/inativo através de pedidos PUT e DELETE à API.
-
-🛠️ Tecnologias Utilizadas
-React.js: Biblioteca principal para construção da interface.
-
-Context API: Utilizada para gerir globalmente os dados do utilizador (CurrentUserContext).
-
-CSS Dinâmico: Gestão de estados de visibilidade (popups e botões) através de classes CSS condicionais.
-
-REST API: Integração completa com serviços de backend para operações CRUD.
-
-## 🧱 Project Structure
-
-
-src/
-components/
-App/
-Header/
-Main/
-Footer/
-Card/
-Popup/
-NewCard/
-EditProfile/
-EditAvatar/
-ImagePopup/
-RemoveCard/
-blocks/
-images/
-index.css
-main.jsx
-
-
-## ⚙️ Installation & Setup
-
-1. Clone the repository:
-
-git clone <repository-url>
-
-
-2. Navigate into the project directory:
-
-cd web_project_around_react
-
-
-3. Install dependencies:
-
-npm install
-
-
-4. Start development server:
-
-npm run dev
-
-
-The application will open automatically in your browser (default port: 3000).
-
-## 🧠 Features Implemented
-
-- JSX markup conversion from static HTML
-- Component-based architecture
-- Reusable `Popup` component
-- State management using `useState`
-- Conditional rendering for pop-ups
-- Image preview modal
-- Mock card data rendering via `.map()`
-
-## 🗂 Mock Data
-
-Cards are currently rendered using static mock data.  
-API integration will be implemented in a future sprint.
-
-## 🎯 Learning Objectives
-
-This project demonstrates:
-
-- Converting HTML to JSX
-- Component decomposition
-- State lifting
-- Passing props between components
-- Conditional rendering
-- Reusable component patterns
-- Clean project structure
-
-## 📌 Future Improvements
-
-- Form validation using controlled components
-- API integration
-- Like / remove card logic
-- Full state management for user data
+This project was developed as part of the **TripleTen Web Development Program**.
 
 ---
 
-## 👤 Author
+## Technologies Used
 
-Pedro Faustino  
-Community Pharmacist transitioning into Web Development  
-TripleTen Web Development Program
+* React
+* JavaScript (ES6+)
+* Vite
+* CSS (BEM methodology)
+* REST API
+* React Hooks
+
+  * useState
+  * useEffect
+  * useContext
+  * useRef
+* Context API
+
+---
+
+## Features
+
+### User Profile
+
+* View user profile information
+* Edit profile name and description
+* Update user avatar
+
+### Cards
+
+* Display cards retrieved from the API
+* Add new cards
+* Delete cards
+* Like and unlike cards
+
+### Popups
+
+* Image preview popup
+* Edit profile popup
+* Edit avatar popup
+* Add new card popup
+
+### State Management
+
+* User data is shared using **React Context**
+* Cards are managed in the root component and passed down via props
+
+---
+
+## Project Structure
+
+src/
+
+```
+components/
+Card/
+EditAvatar/
+EditProfile/
+Footer/
+Header/
+ImagePopup/
+Main/
+NewCard/
+Popup/
+
+contexts/
+CurrentUserContext.js
+
+utils/
+api.js
+```
+
+---
+
+## API
+
+The application communicates with the TripleTen Around API.
+
+Example endpoints used:
+
+* GET /users/me
+* PATCH /users/me
+* PATCH /users/me/avatar
+* GET /cards
+* POST /cards
+* DELETE /cards/:id
+* PUT /cards/:id/likes
+* DELETE /cards/:id/likes
+
+---
+
+## Running the Project
+
+Clone the repository:
+
+```
+git clone <repository-url>
+```
+
+Install dependencies:
+
+```
+npm install
+```
+
+Start the development server:
+
+```
+npm run dev
+```
+
+Open in browser:
+
+```
+http://localhost:5173
+```
+
+---
+
+## Future Improvements
+
+Possible improvements for the project include:
+
+* Form validation
+* Loading indicators for API requests
+* Confirmation popup before deleting cards
+* Error handling for failed requests
+* Code optimization and component reuse
+
+---
+
+## Author
+
+Pedro Faustino
+TripleTen Web Development Student

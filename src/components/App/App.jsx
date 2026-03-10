@@ -1,159 +1,120 @@
 import { useState, useEffect } from "react";
-import Header from "../Header/Header";
-import Main from "../Main/Main";
-import Footer from "../Footer/Footer";
-import Popup from "../Popup/Popup";
-import ImagePopup from "../ImagePopup/ImagePopup";
-import EditProfile from "../EditProfile/EditProfile";
-import EditAvatar from "../EditAvatar/EditAvatar";
-import NewCard from "../NewCard/NewCard";
-import ConfirmDeletePopup from "../ConfirmDeletePopup/ConfirmDeletePopup";
 import api from "../../utils/api";
 import CurrentUserContext from "../../contexts/CurrentUserContext";
 
+import Header from "../Header/Header";
+import Main from "../Main/Main";
+import Footer from "../Footer/Footer";
+
 function App() {
-  // Estados para Popups
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
-  const [isConfirmDeletePopupOpen, setIsConfirmDeletePopupOpen] = useState(false);
-  const [selectedCard, setSelectedCard] = useState(null);
-  const [cardToDelete, setCardToDelete] = useState(null);
-
-  // Estados para Dados e UX
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState({});
+  const [popup, setPopup] = useState(null);
   const [cards, setCards] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
-  // 1. Carregamento Inicial (User e Cards)
   useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([userData, cardsData]) => {
+    api
+      .getUserInfo()
+      .then((userData) => {
         setCurrentUser(userData);
-        setCards(cardsData);
       })
-      .catch((err) => console.log(`Erro ao carregar dados: ${err}`));
+      .catch(console.error);
   }, []);
 
-  // 2. Manipuladores de Perfil e Avatar
+  useEffect(() => {
+    api
+      .getInitialCards()
+      .then((cardsData) => {
+        setCards(cardsData);
+      })
+      .catch(console.error);
+  }, []);
+
+  function handleOpenPopup(popupData) {
+    setPopup(popupData);
+  }
+
+  function handleClosePopup() {
+    setPopup(null);
+  }
+
   function handleUpdateUser(data) {
-  setIsLoading(true);
-  // A API espera { name, about }
-  api.updateUserInfo({ name: data.name, about: data.about })
-    .then((newUser) => {
-      setCurrentUser(newUser);
-      closeAllPopups();
-    })
-    .catch((err) => console.log(err))
-    .finally(() => setIsLoading(false));
+    api
+      .updateUserInfo(data)
+      .then((newData) => {
+        setCurrentUser(newData);
+        handleClosePopup();
+      })
+      .catch(console.error);
   }
 
   function handleUpdateAvatar(data) {
-  setIsLoading(true);
-  // 'data' geralmente vem como { avatar: "url" } do componente EditAvatar
-  api.updateAvatar(data.avatar) 
-    .then((newUser) => {
-      setCurrentUser(newUser);
-      closeAllPopups();
-    })
-    .catch((err) => console.log(err))
-    .finally(() => setIsLoading(false));
+    api
+      .updateAvatar(data)
+      .then((newData) => {
+        setCurrentUser(newData);
+        handleClosePopup();
+      })
+      .catch(console.error);
   }
 
-  // 3. Manipuladores de Cartões (Like, Add, Delete)
   function handleCardLike(card) {
-  // Verificamos se o currentUser e card.likes existem para evitar o TypeError
-  if (!currentUser) return;
+  const isLiked = card.isLiked;
 
-  const isLiked = (card.likes || []).some((i) => i._id === currentUser._id);
-  
-  api.changeLikeCardStatus(card._id, isLiked)
-    .then((newCard) => {
-      setCards((state) => 
-        state.map((c) => (c._id === card._id ? newCard : c))
+  api
+    .changeLikeCardStatus(card._id, !isLiked)
+    .then(() => {
+      setCards((state) =>
+        state.map((currentCard) =>
+          currentCard._id === card._id
+            ? { ...currentCard, isLiked: !isLiked }
+            : currentCard
+        )
       );
     })
-    .catch((err) => console.log(`Erro ao processar like: ${err}`));
+    .catch(console.error);
+  }
+
+  function handleCardDelete(card) {
+    api
+      .deleteCard(card._id)
+      .then(() => {
+        setCards((state) =>
+          state.filter((currentCard) => currentCard._id !== card._id)
+        );
+      })
+      .catch(console.error);
   }
 
   function handleAddPlaceSubmit(data) {
-    setIsLoading(true);
-    api.addCard(data)
+    api
+      .addCard(data)
       .then((newCard) => {
-        setCards([newCard, ...cards]);
-        closeAllPopups();
+        setCards((state) => [newCard, ...state]);
+        handleClosePopup();
       })
-      .catch((err) => console.log(err))
-      .finally(() => setIsLoading(false));
+      .catch(console.error);
   }
-
-  function handleCardDeleteConfirm() {
-    setIsLoading(true);
-    api.deleteCard(cardToDelete._id)
-      .then(() => {
-        setCards((state) => state.filter((c) => c._id !== cardToDelete._id));
-        closeAllPopups();
-      })
-      .catch((err) => console.log(err))
-      .finally(() => setIsLoading(false));
-  }
-
-  // 4. Funções de Controlo de UI
-  const closeAllPopups = () => {
-    setIsEditProfilePopupOpen(false);
-    setIsAddPlacePopupOpen(false);
-    setIsEditAvatarPopupOpen(false);
-    setIsConfirmDeletePopupOpen(false);
-    setSelectedCard(null);
-    setCardToDelete(null);
-  };
 
   return (
-    <CurrentUserContext.Provider value={{ currentUser, handleUpdateUser, handleUpdateAvatar }}>
-      <div className="page">
+    <CurrentUserContext.Provider
+      value={{
+        currentUser,
+        handleUpdateUser,
+        handleUpdateAvatar,
+        handleAddPlaceSubmit,
+      }}
+    >
+      <div className="page__content">
         <Header />
         <Main
-          onEditProfileClick={() => setIsEditProfilePopupOpen(true)}
-          onAddPlaceClick={() => setIsAddPlacePopupOpen(true)}
-          onEditAvatarClick={() => setIsEditAvatarPopupOpen(true)}
-          onCardClick={(card) => setSelectedCard(card)}
-          onCardLike={handleCardLike}
-          onCardDelete={(card) => {
-            setIsConfirmDeletePopupOpen(true);
-            setCardToDelete(card);
-          }}
+          popup={popup}
+          onOpenPopup={handleOpenPopup}
+          onClosePopup={handleClosePopup}
           cards={cards}
+          onCardLike={handleCardLike}
+          onCardDelete={handleCardDelete}
         />
         <Footer />
-
-        {/* Popups com Indicador de Carregamento */}
-        <EditProfile 
-          isOpen={isEditProfilePopupOpen} 
-          onClose={closeAllPopups} 
-          isLoading={isLoading} 
-        />
-
-        <NewCard 
-          isOpen={isAddPlacePopupOpen} 
-          onClose={closeAllPopups} 
-          onAddPlaceSubmit={handleAddPlaceSubmit}
-          isLoading={isLoading}
-        />
-
-        <EditAvatar 
-          isOpen={isEditAvatarPopupOpen} 
-          onClose={closeAllPopups} 
-          isLoading={isLoading}
-        />
-
-        <ConfirmDeletePopup
-          isOpen={isConfirmDeletePopupOpen}
-          onClose={closeAllPopups}
-          onConfirm={handleCardDeleteConfirm}
-          isLoading={isLoading}
-        />
-
-        <ImagePopup card={selectedCard} onClose={closeAllPopups} />
       </div>
     </CurrentUserContext.Provider>
   );

@@ -1,66 +1,91 @@
 import { useContext } from "react";
 import CurrentUserContext from "../../contexts/CurrentUserContext";
-import Card from "../Card/Card"; 
+
+import Card from "../Card/Card";
+import Popup from "../Popup/Popup";
+import NewCard from "../NewCard/NewCard";
+import EditProfile from "../EditProfile/EditProfile";
+import EditAvatar from "../EditAvatar/EditAvatar";
 
 function Main(props) {
-  // 1. Inscrição no contexto (Requisito Checklist 4)
+  const { popup, onOpenPopup, onClosePopup, cards, onCardLike, onCardDelete } =
+    props;
+
   const { currentUser } = useContext(CurrentUserContext);
 
-  if (!currentUser) {
-    return <div className="content">Carregando...</div>;
-  }
+  const newCardPopup = { title: "New card", children: <NewCard /> };
+  const editProfilePopup = { title: "Edit profile", children: <EditProfile /> };
+  const editAvatarPopup = { title: "Change avatar", children: <EditAvatar /> };
+
+  console.log("currentUser:", currentUser);
 
   return (
     <main className="content">
-      <section className="profile">
-        <div className="profile__avatar-container">
-          {/* Adicionamos uma verificação simples ou fallback para evitar src vazio */}
-          <img 
-            className="profile__image" 
-            src={currentUser.avatar || null} 
-            alt={`Avatar de ${currentUser.name || "Avatar"}`} 
+      <section className="profile page__section">
+        <button
+          className="profile__avatar-button"
+          type="button"
+          aria-label="Alterar foto do perfil"
+          onClick={() => onOpenPopup(editAvatarPopup)}
+        >
+          <img
+            className="profile__image"
+            src={currentUser?.avatar}
+            alt={currentUser?.name}
           />
-          <button 
-            className="profile__avatar-edit" 
-            type="button" 
-            aria-label="Editar avatar"
-            onClick={props.onEditAvatarClick}
-          ></button>
-        </div>
+        </button>
+
         <div className="profile__info">
-          <div className="profile__title-container">
-             <h1 className="profile__name">{currentUser?.name || "Carregando..."}</h1>
-             <button 
-                className="profile__edit-button" 
-                type="button" 
-                aria-label="Editar perfil"
-                onClick={props.onEditProfileClick}
-             ></button>
-          </div>
-          <p className="profile__description">{currentUser?.about || ""}</p>
+          <h1 className="profile__title">{currentUser.name}</h1>
+          <button
+            aria-label="Editar perfil"
+            className="profile__edit-button"
+            type="button"
+            onClick={() => onOpenPopup(editProfilePopup)}
+          />
+          <p className="profile__description">{currentUser.about}</p>
         </div>
-        <button 
-          className="profile__add-button" 
-          type="button" 
-          aria-label="Adicionar lugar"
-          onClick={props.onAddPlaceClick}
-        ></button>
+
+        <button
+          aria-label="Adicionar cartão"
+          className="profile__add-button"
+          type="button"
+          onClick={() => onOpenPopup(newCardPopup)}
+        />
       </section>
 
-      <section className="elements">
-        <ul className="elements__list">
-          {/* Renderização dinâmica (Requisito Checklist 3) */}
-          {props.cards.map((card) => (
-            <Card
-              key={card._id} // Uso obrigatório de chaves únicas
-              card={card}
-              onCardClick={props.onCardClick} 
-              onCardLike={props.onCardLike}
-              onCardDelete={props.onCardDelete}
-            />
-          ))}
+      <section className="cards page__section">
+        <ul className="cards__list">
+          {cards.map((card) => {
+  const isLiked = (card.likes || []).some(
+    (i) => i._id === currentUser?._id
+  );
+
+  return (
+    <Card
+      key={card._id}
+      card={{
+      ...card,
+      isLiked:
+      card.isLiked ??
+      (card.likes || []).some((i) => i._id === currentUser?._id),
+      }}
+      handleOpenPopup={onOpenPopup}
+      onCardLike={onCardLike}
+      onCardDelete={onCardDelete}
+    />
+
+
+    );
+  })}
         </ul>
       </section>
+
+      {popup && (
+        <Popup onClose={onClosePopup} title={popup.title}>
+          {popup.children}
+        </Popup>
+      )}
     </main>
   );
 }

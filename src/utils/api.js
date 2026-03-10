@@ -6,19 +6,18 @@ class Api {
 
   _checkResponse(res) {
     if (res.ok) return res.json();
-    return Promise.reject(`Erro: ${res.status}`);
+    return Promise.reject(`Error: ${res.status}`);
   }
 
   _request(path, options = {}) {
-    // Garante que o authorization está sempre presente e limpo
     const headers = {
       ...this._headers,
-      ...options.headers
+      ...(options.headers || {}),
     };
 
     return fetch(`${this._baseUrl}${path}`, {
       ...options,
-      headers: headers
+      headers,
     }).then(this._checkResponse);
   }
 
@@ -58,11 +57,11 @@ class Api {
 
   changeLikeCardStatus(cardId, isLiked) {
     return this._request(`/cards/${cardId}/likes`, {
-      method: isLiked ? "DELETE" : "PUT", // Se já tem like, remove. Se não, adiciona.
+      method: isLiked ? "PUT" : "DELETE",
     });
   }
 
-  updateAvatar(avatar) {
+  updateAvatar({ avatar }) {
     return this._request("/users/me/avatar", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -71,13 +70,11 @@ class Api {
   }
 }
 
-// Instância configurada com os teus dados reais
 const api = new Api({
-  baseUrl: "https://around-api.pt-br.tripleten-services.com/v1", 
+  baseUrl: "https://around-api.pt-br.tripleten-services.com/v1",
   headers: {
     authorization: "d96dea7b-0ff4-4a6a-8888-596d93c1e617",
-    "Content-Type": "application/json"
-  }
+  },
 });
 
 export default api;
